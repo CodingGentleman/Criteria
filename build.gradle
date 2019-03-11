@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'at.fhj'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+task criteriaWrapper(type: Wrapper){ 
+    gradleVersion = '5.2.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Hibernate
+    compile 'org.hibernate:hibernate-agroal:5.3.9.Final'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    
+    // MariaDB driver
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.0'
+    
+    // JUnit 5 framework for proper test factories
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
+}
+
+test {
+    useJUnitPlatform()
+}
