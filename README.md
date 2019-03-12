@@ -21,7 +21,19 @@ Installation:
 MariaDB
 ```shell
 mysql -u root -p <rootPassword>
+```
+```sql
 create user 'student'@'localhost' identified by 'student';
 create database testdb;
 grant all privileges on testdb.* to 'student'@'localhost' identified by 'student';
+```
+
+PostgreSQL
+```shell
+sudo -u postgres psql
+```
+```sql
+create database testdb;
+create user student with encrypted password 'student';
+grant all privileges on database testdb to student;
 ```

@@ -1,4 +1,7 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_2.xsd"
+             version="1.0">
     <persistence-unit name="maria_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
@@ -7,9 +10,35 @@
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
             <property name="hibernate.default_schema" value="testdb"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="maria_eclipselink" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/testdb"/>
+            <property name="javax.persistence.jdbc.user" value="student"/>
+            <property name="javax.persistence.jdbc.password" value="student"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="postgresql_hibernate" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/testdb"/>
+            <property name="javax.persistence.jdbc.user" value="student"/>
+            <property name="javax.persistence.jdbc.password" value="student"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.default_schema" value="testdb"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="postgresql_eclipselink" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/testdb"/>
+            <property name="javax.persistence.jdbc.user" value="student"/>
+            <property name="javax.persistence.jdbc.password" value="student"/>
         </properties>
     </persistence-unit>
 </persistence>
