@@ -23,6 +23,9 @@ dependencies {
     // EclipseLink
     compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.4'
 
+    // OpenJPA
+    compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.0.0'
+
     // MariaDB driver
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.0'
 

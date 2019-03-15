@@ -21,11 +21,20 @@
             <property name="javax.persistence.jdbc.password" value="student"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="maria_openjpa" transaction-type="RESOURCE_LOCAL">
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <properties>
+            <property name="openjpa.ConnectionDriverName" value="org.mariadb.jdbc.Driver"/>
+            <property name="openjpa.ConnectionURL" value="jdbc:mariadb://localhost:3306/testdb"/>
+            <property name="openjpa.ConnectionUserName" value="student"/>
+            <property name="openjpa.ConnectionPassword" value="student"/>
+        </properties>
+    </persistence-unit>
     <persistence-unit name="postgresql_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/testdb"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/testdb"/>
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
@@ -36,9 +45,18 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/testdb"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/testdb"/>
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="postgresql_openjpa" transaction-type="RESOURCE_LOCAL">
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <properties>
+            <property name="openjpa.ConnectionDriverName" value="org.postgresql.Driver"/>
+            <property name="openjpa.ConnectionURL" value="jdbc:postgresql://localhost:5432/testdb"/>
+            <property name="openjpa.ConnectionUserName" value="student"/>
+            <property name="openjpa.ConnectionPassword" value="student"/>
         </properties>
     </persistence-unit>
 </persistence>
