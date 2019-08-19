@@ -1,6 +1,6 @@
 # WIP: Applied use of the Criteria API
 
-Student: **Kevin Schmid**
+Student: **Kevin Schmid**  
 Supervisor: **FH-Prof. Dipl.-Ing. Dr. Egon Teiniker**
 
 ## Exposé
@@ -35,8 +35,9 @@ Keith, Mike, Merrick Schincariol, Massimo Nardone (2018). Pro JPA 2 in Java EE 8
 > TODO: Docker Container
 
 User credentials for all databases:
-User: **student**
-Password: **student**  
+
+User: **student**  
+Password: **student**    
 Schema: **testdb**
 
 ### DB scripts
