@@ -63,6 +63,17 @@ create user student with encrypted password 'student';
 grant all privileges on database testdb to student;
 ```
 
+#### Oracle
+
+Connect to your running container (check the name of ```docker ps```)
+
+```shell
+docker exec -it criteria_oracle_1 /bin/bash
+sqlplus "SYS/ as SYSDBA"
+```
+
+execute the statements in oracle/init.sql
+
 ## Versions used
 - Java 11
 - MariaDB 10.4

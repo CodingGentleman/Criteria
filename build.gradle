@@ -8,11 +8,18 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 11
 
 task criteriaWrapper(type: Wrapper){ 
-    gradleVersion = '5.2.1'
+    gradleVersion = '5.6'
 }
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://www.oracle.com/content/secure/maven/content'
+        credentials {
+            username 'schmid.kevin.manuel@gmail.com'
+            password 'Illuminat1'
+        }
+    }
 }
 
 dependencies {
@@ -25,6 +32,11 @@ dependencies {
 
     // OpenJPA
     compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.0.0'
+
+    // Oracle driver
+    compile(group: 'com.oracle.jdbc', name: 'ojdbc8', version: '12.2.0.1') {
+        exclude module: 'xmlparserv2'
+    }
 
     // MariaDB driver
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.0'

@@ -1,7 +1,35 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_2.xsd"
-             version="1.0">
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+    <persistence-unit name="oracle_hibernate" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:ORCLCDB"/>
+            <property name="javax.persistence.jdbc.user" value="student"/>
+            <property name="javax.persistence.jdbc.password" value="student"/>
+            <property name="hibernate.default_schema" value="testdb"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="oracle_eclipselink" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:ORCLCDB"/>
+            <property name="javax.persistence.jdbc.user" value="student"/>
+            <property name="javax.persistence.jdbc.password" value="student"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="oracle_openjpa" transaction-type="RESOURCE_LOCAL">
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <properties>
+            <property name="openjpa.ConnectionDriverName" value="oracle.jdbc.OracleDriver"/>
+            <property name="openjpa.ConnectionURL" value="jdbc:oracle:thin:@localhost:1521:ORCLCDB"/>
+            <property name="openjpa.ConnectionUserName" value="student"/>
+            <property name="openjpa.ConnectionPassword" value="student"/>
+        </properties>
+    </persistence-unit>
     <persistence-unit name="maria_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
@@ -37,7 +65,6 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/testdb"/>
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.default_schema" value="testdb"/>
         </properties>
     </persistence-unit>

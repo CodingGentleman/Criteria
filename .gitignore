@@ -20,3 +20,5 @@
 .idea
 out
 gradle
+
+/build/*
