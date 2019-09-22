@@ -24,14 +24,14 @@ repositories {
 
 dependencies {
     // Hibernate
-    compile 'org.hibernate:hibernate-agroal:5.3.9.Final'
+    compile 'org.hibernate:hibernate-core:5.4.4.Final'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     // EclipseLink
     compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.4'
 
     // OpenJPA
-    compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.0.0'
+    compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.1.0'
 
     // Oracle driver
     compile(group: 'com.oracle.jdbc', name: 'ojdbc8', version: '12.2.0.1') {
