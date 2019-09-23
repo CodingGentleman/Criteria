@@ -23,8 +23,8 @@ public class Tester {
 
     @BeforeAll
     static void setup() {
-        var uc = new UseCases();
-        uc.batchInsert(10);
+        var uc = new UseCases(10);
+        uc.batchInsert();
     }
 
     @AfterAll
@@ -48,7 +48,8 @@ public class Tester {
 
     @Test
     public void test() {
-        AddressDao.create().findAll();
+        var addressDao = AddressDao.create();
+        addressDao.whereLastnameEquals("L2");
         var invoice = anAddress().withFirstname("f1").withLastname("l1").build();
         var order = anOrder().withType(OrderType.B2B).withInvoiceAddress(invoice).build();
     }

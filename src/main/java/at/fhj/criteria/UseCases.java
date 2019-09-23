@@ -11,14 +11,17 @@ import java.util.Random;
 public class UseCases {
     private Random random = new Random();
     private static final int BATCH_SIZE = 99999;
-    public UseCases(){}
+    private final int count;
+    public UseCases(int count){
+        this.count = count;
+    }
 
-    public void batchInsert(int count) {
-        Persistence.INST.inTransaction(() -> setSearchPath());
-        Persistence.INST.inTransaction(() -> insertAddress(count));
-        Persistence.INST.inTransaction(() -> insertOrder(count));
-        Persistence.INST.inTransaction(() -> insertOrderLine(count));
-        Persistence.INST.inTransaction(() -> insertVoucher(count));
+    public void batchInsert() {
+        Persistence.INST.inTransaction(this::setSearchPath);
+        Persistence.INST.inTransaction(this::insertAddress);
+        Persistence.INST.inTransaction(this::insertOrder);
+        Persistence.INST.inTransaction(this::insertOrderLine);
+        Persistence.INST.inTransaction(this::insertVoucher);
     }
 
     private void setSearchPath() {
@@ -29,7 +32,7 @@ public class UseCases {
         }
     }
 
-    private void insertVoucher(int count) {
+    private void insertVoucher() {
         try {
             var psVoucher = getConnection().prepareStatement("INSERT INTO voucher (code, \"value\") VALUES (?, ?)");
             var batchCounterVoucher = 0;
@@ -69,7 +72,7 @@ public class UseCases {
         }
     }
 
-    private void insertOrderLine(int count) {
+    private void insertOrderLine() {
         try {
             var psOrderLine = getConnection().prepareStatement("INSERT INTO orderline (order_id, \"name\", quantity) VALUES (?, ?, ?)");
             var batchCounter = 0;
@@ -90,7 +93,7 @@ public class UseCases {
         }
     }
 
-    private void insertOrder(int count) {
+    private void insertOrder() {
         try {
             var psOrder = getConnection().prepareStatement("INSERT INTO orders (order_type, invoiceaddress_id, deliveryaddress_id) VALUES (?, ?, ?)");
             var batchCounter = 0;
@@ -109,7 +112,7 @@ public class UseCases {
         }
     }
 
-    private void insertAddress(int count) {
+    private void insertAddress() {
         try {
             var ps = getConnection().prepareStatement("INSERT INTO address (firstname, lastname) VALUES (?, ?)");
             var batchCounter = 0;
