@@ -4,6 +4,7 @@ import static at.fhj.criteria.entities.builder.OrderBuilder.anOrder;
 
 import static at.fhj.criteria.entities.builder.AddressBuilder.anAddress;
 
+import at.fhj.criteria.dao.AddressDao;
 import at.fhj.criteria.entities.Address;
 import at.fhj.criteria.entities.OrderType;
 import at.fhj.criteria.entities.immutable.AddressView;
@@ -47,6 +48,7 @@ public class Tester {
 
     @Test
     public void test() {
+        AddressDao.create().findAll();
         var invoice = anAddress().withFirstname("f1").withLastname("l1").build();
         var order = anOrder().withType(OrderType.B2B).withInvoiceAddress(invoice).build();
     }

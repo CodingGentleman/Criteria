@@ -2,7 +2,6 @@ package at.fhj.criteria.persistence;
 
 import at.fhj.criteria.entities.Entity;
 import javax.persistence.EntityManagerFactory;
-import java.util.List;
 
 public enum Persistence {
     INST;
@@ -40,32 +39,6 @@ public enum Persistence {
     public void close() {
         entityManager.close();
         managerFactory.close();
-    }
-
-    public <T extends Entity> T find(Class<T> entityClass, int id) {
-        T result = entityManager.find(entityClass, id);
-        // needed to ignore cache
-        this.refresh(result);
-        return result;
-    }
-
-    public <T extends Entity> List<T> findAll(Class<T> entityClass) {
-        var query = entityManager.createQuery("from "+entityClass.getSimpleName(), entityClass);
-        var resultList = query.getResultList();
-        // needed to ignore cache
-        resultList.forEach(this::refresh);
-        return resultList;
-    }
-
-    public <T extends Entity> List<T> findAllCriteria(Class<T> entityClass) {
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var q = criteriaBuilder.createQuery(entityClass);
-        q.select(q.from(entityClass));
-        var query = entityManager.createQuery(q);
-        var resultList = query.getResultList();
-        // needed to ignore cache
-        resultList.forEach(this::refresh);
-        return resultList;
     }
 
     public void remove(Entity entity) {

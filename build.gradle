@@ -13,13 +13,6 @@ task criteriaWrapper(type: Wrapper){
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://www.oracle.com/content/secure/maven/content'
-        credentials {
-            username 'schmid.kevin.manuel@gmail.com'
-            password 'Illuminat1'
-        }
-    }
 }
 
 dependencies {
@@ -34,7 +27,7 @@ dependencies {
     compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.1.0'
 
     // Oracle driver
-    compile(group: 'com.oracle.jdbc', name: 'ojdbc8', version: '12.2.0.1') {
+    compile(group: 'com.oracle.jdbc', name: 'ojdbc10', version: '19.3.0.0') {
         exclude module: 'xmlparserv2'
     }
 

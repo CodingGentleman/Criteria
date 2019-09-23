@@ -14,4 +14,8 @@ public final class Criteria {
     public static <T extends Entity<U>, U extends EntityView<T>> ViewTypedQuery<T, U> createQuery(CriteriaQuery<T> criteriaQuery) {
         return Persistence.INST.getEntityManager().createViewQuery(criteriaQuery);
     }
+
+    public static <T extends Entity<U>, U extends EntityView<T>> ViewTypedQuery<T, U> createQuery(String query, Class<T> resultClass) {
+        return Persistence.INST.getEntityManager().createViewQuery(query, resultClass);
+    }
 }

@@ -1,7 +1,6 @@
 package at.fhj.criteria.dao;
 
 import at.fhj.criteria.entities.immutable.EntityView;
-import at.fhj.criteria.persistence.Criteria;
 import at.fhj.criteria.persistence.Persistence;
 
 import java.util.List;
