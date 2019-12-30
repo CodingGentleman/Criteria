@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface Dao<T extends EntityView> {
     List<T> findAll();
-    default void delete(T entity) {
-        Persistence.INST.remove(entity.getEntity());
+    default void delete(T view) {
+        Persistence.INST.remove(view.getEntity());
+    }
+    default void update(T view) {
+        Persistence.INST.merge(view.getEntity());
     }
 }

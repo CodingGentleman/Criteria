@@ -7,9 +7,10 @@ import at.fhj.criteria.entities.immutable.VoucherView;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @javax.persistence.Entity
 @Table(name = "orderline")
@@ -28,7 +29,7 @@ public class OrderLine implements Entity<OrderLineView>, OrderLineView {
     private String name;
 
     @ManyToMany(mappedBy = "orderLines")
-    private Collection<Voucher> vouchers = new ArrayList<>();
+    private List<Voucher> vouchers = new ArrayList<>();
 
     protected OrderLine(){}
     public OrderLine(Builder<OrderLine> builder) {
@@ -81,6 +82,11 @@ public class OrderLine implements Entity<OrderLineView>, OrderLineView {
         } else {
             this.order = null;
         }
+    }
+
+    @Override
+    public List<VoucherView> getVouchers() {
+        return vouchers.stream().map(Voucher::view).collect(Collectors.toList());
     }
 
     public void addVoucher(VoucherView voucher) {

@@ -1,6 +1,7 @@
 package at.fhj.criteria.dao;
 
 import at.fhj.criteria.entities.Address;
+import at.fhj.criteria.entities.Address_;
 import at.fhj.criteria.entities.immutable.AddressView;
 import at.fhj.criteria.persistence.Criteria;
 
@@ -18,7 +19,7 @@ class AddressDaoImpl extends BaseDao implements AddressDao {
         var query = cb.createQuery(Address.class);
         var root = query.from(Address.class);
         query.select(root);
-        query.where(cb.equal(root.get(Address.Field.LASTNAME), lastname));
+        query.where(cb.equal(root.get(Address_.lastname), lastname));
         return Criteria.createQuery(query).getSingleResult();
     }
 
@@ -28,7 +29,7 @@ class AddressDaoImpl extends BaseDao implements AddressDao {
         var query = cb.createQuery(Address.class);
         var root = query.from(Address.class);
         query.select(root);
-        query.where(cb.like(root.get(Address.Field.LASTNAME), lastname));
+        query.where(cb.like(root.get(Address_.lastname), lastname));
         return Criteria.createQuery(query).getResultList();
     }
 }

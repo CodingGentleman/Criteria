@@ -12,11 +12,6 @@ import java.util.logging.Logger;
 @javax.persistence.Entity
 @Table(name = "address")
 public class Address implements Entity<AddressView>, AddressView {
-    public static class Field {
-        public static final String FIRSTNAME = "firstname";
-        public static final String LASTNAME = "lastname";
-    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +24,6 @@ public class Address implements Entity<AddressView>, AddressView {
     public Address(Builder<Address> builder) {
         Logger.getLogger(Address.class.getName()).log(Level.FINEST,
                 "instantiated by "+builder.getClass().getName());
-    }
-
-    public static CriteriaQuery<Address> createQuery() {
-        return Persistence.INST.getEntityManager().getCriteriaBuilder().createQuery(Address.class);
     }
 
     @Override

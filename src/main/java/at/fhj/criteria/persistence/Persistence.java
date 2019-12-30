@@ -57,7 +57,9 @@ public enum Persistence {
 
     public void inTransaction(Runnable runnable) {
         var transaction = entityManager.getTransaction();
+        if(!transaction.isActive()) {
         transaction.begin();
+        }
         runnable.run();
         transaction.commit();
     }

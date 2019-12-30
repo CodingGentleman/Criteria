@@ -1,8 +1,6 @@
 package at.fhj.criteria.entities.builder;
 
-import at.fhj.criteria.entities.Address;
 import at.fhj.criteria.entities.Order;
-import at.fhj.criteria.entities.OrderLine;
 import at.fhj.criteria.entities.OrderType;
 import at.fhj.criteria.entities.immutable.AddressView;
 import at.fhj.criteria.entities.immutable.OrderLineView;
@@ -13,9 +11,9 @@ import java.util.List;
 
 public class OrderBuilder extends BaseBuilder<Order, OrderView> {
     private OrderType type;
-    private final List<OrderLine> lines = new ArrayList<>();
-    private Address invoiceAddress;
-    private Address deliveryAddress;
+    private final List<OrderLineView> lines = new ArrayList<>();
+    private AddressView invoiceAddress;
+    private AddressView deliveryAddress;
 
     private OrderBuilder() {}
 

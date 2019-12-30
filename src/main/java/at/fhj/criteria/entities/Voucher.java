@@ -8,6 +8,7 @@ import at.fhj.criteria.entities.immutable.VoucherView;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -73,12 +74,12 @@ public class Voucher implements Entity<VoucherView>, VoucherView {
     }
 
     @Override
-    public Collection<OrderView> getOrders() {
+    public List<OrderView> getOrders() {
         return orders.stream().map(Order::view).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<OrderLineView> getOrderLines() {
+    public List<OrderLineView> getOrderLines() {
         return orderLines.stream().map(OrderLine::view).collect(Collectors.toList());
     }
 

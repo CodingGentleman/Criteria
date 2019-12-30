@@ -1,7 +1,6 @@
 plugins {
     id 'java'
 }
-
 group 'at.fhj'
 version '1.0-SNAPSHOT'
 
@@ -15,10 +14,23 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file("src/generated/java")
+}
+
+sourceSets {
+    generated {
+        java {
+            srcDirs = ['src/generated/java']
+        }
+    }
+}
+
 dependencies {
     // Hibernate
     compile 'org.hibernate:hibernate-core:5.4.4.Final'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    annotationProcessor('org.hibernate:hibernate-jpamodelgen:5.4.9.Final')
 
     // EclipseLink
     compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.4'
@@ -27,7 +39,7 @@ dependencies {
     compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.1.0'
 
     // Oracle driver
-    compile(group: 'com.oracle.jdbc', name: 'ojdbc10', version: '19.3.0.0') {
+    compile(group: 'com.oracle.ojdbc', name: 'ojdbc10', version: '19.3.0.0') {
         exclude module: 'xmlparserv2'
     }
 

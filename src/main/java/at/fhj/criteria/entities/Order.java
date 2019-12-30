@@ -1,8 +1,7 @@
 package at.fhj.criteria.entities;
 
 import at.fhj.criteria.entities.builder.Builder;
-import at.fhj.criteria.entities.immutable.OrderView;
-import at.fhj.criteria.entities.immutable.VoucherView;
+import at.fhj.criteria.entities.immutable.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @javax.persistence.Entity
 @Table(name = "orders")
@@ -33,7 +33,7 @@ public class Order implements Entity<OrderView>, OrderView {
     private Address deliveryAddress;
 
     @ManyToMany(mappedBy = "orders")
-    private Collection<Voucher> vouchers = new ArrayList<>();
+    private List<Voucher> vouchers = new ArrayList<>();
 
     protected Order(){}
     public Order(Builder<Order> builder) {
@@ -66,34 +66,39 @@ public class Order implements Entity<OrderView>, OrderView {
     }
 
     @Override
-    public List<OrderLine> getLines() {
-        return lines;
+    public List<OrderLineView> getLines() {
+        return lines.stream().map(OrderLine::view).collect(Collectors.toList());
     }
 
-    public void addLine(OrderLine line) {
-        this.lines.add(line);
+    public void addLine(OrderLineView line) {
+        this.lines.add(line.getEntity());
     }
 
-    public void addLines(Collection<OrderLine> lines) {
-        this.lines.addAll(lines);
+    public void addLines(Collection<OrderLineView> lines) {
+        this.lines.addAll(lines.stream().map(EntityView::getEntity).collect(Collectors.toList()));
     }
 
     @Override
-    public Address getInvoiceAddress() {
+    public AddressView getInvoiceAddress() {
         return invoiceAddress;
     }
 
-    public void setInvoiceAddress(Address invoiceAddress) {
-        this.invoiceAddress = invoiceAddress;
+    public void setInvoiceAddress(AddressView invoiceAddress) {
+        this.invoiceAddress = invoiceAddress.getEntity();
     }
 
     @Override
-    public Address getDeliveryAddress() {
+    public AddressView getDeliveryAddress() {
         return deliveryAddress;
     }
 
-    public void setDeliveryAddress(Address deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
+    public void setDeliveryAddress(AddressView deliveryAddress) {
+        this.deliveryAddress = deliveryAddress.getEntity();
+    }
+
+    @Override
+    public List<VoucherView> getVouchers() {
+        return vouchers.stream().map(Voucher::view).collect(Collectors.toList());
     }
 
     public void addVoucher(VoucherView voucher) {
