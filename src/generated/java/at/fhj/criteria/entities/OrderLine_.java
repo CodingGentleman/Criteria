@@ -1,7 +1,7 @@
 package at.fhj.criteria.entities;
 
 import javax.annotation.processing.Generated;
-import javax.persistence.metamodel.CollectionAttribute;
+import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -12,7 +12,7 @@ public abstract class OrderLine_ {
 	public static volatile SingularAttribute<OrderLine, Integer> quantity;
 	public static volatile SingularAttribute<OrderLine, String> name;
 	public static volatile SingularAttribute<OrderLine, Integer> id;
-	public static volatile CollectionAttribute<OrderLine, Voucher> vouchers;
+	public static volatile ListAttribute<OrderLine, Voucher> vouchers;
 	public static volatile SingularAttribute<OrderLine, Order> order;
 
 	public static final String QUANTITY = "quantity";

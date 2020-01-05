@@ -23,7 +23,7 @@ public class Tester {
 
     @BeforeAll
     static void setup() {
-        var uc = new UseCases(10);
+        var uc = new TestDataInsert(10);
         uc.batchInsert();
     }
 

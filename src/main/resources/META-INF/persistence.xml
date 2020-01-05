@@ -29,7 +29,7 @@
             <property name="openjpa.ConnectionUserName" value="student"/>
             <property name="openjpa.ConnectionPassword" value="student"/>
         </properties>
-    </persistence-unit>
+    </persistence-unit> -->
     <persistence-unit name="maria_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
@@ -56,8 +56,13 @@
             <property name="openjpa.ConnectionURL" value="jdbc:mariadb://localhost:3306/testdb"/>
             <property name="openjpa.ConnectionUserName" value="student"/>
             <property name="openjpa.ConnectionPassword" value="student"/>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
+            <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+            <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+            <property name="openjpa.Log" value="SQL=Trace" />
         </properties>
-    </persistence-unit> -->
+    </persistence-unit>
     <persistence-unit name="postgresql_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <mapping-file>META-INF/orm.xml</mapping-file>
@@ -106,11 +111,9 @@
             <property name="openjpa.ConnectionURL" value="jdbc:postgresql://localhost:5432/testdb"/>
             <property name="openjpa.ConnectionUserName" value="student"/>
             <property name="openjpa.ConnectionPassword" value="student"/>
-            <property name="javax.persistence.schema-generation.database.action" value="drop"/>
+            <!-- <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/> -->
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
             <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
-
-            <property name="javax.persistence.sql-load-script-source" value="META-INF/drop_tables.sql"/>
             <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
             <property name="openjpa.Log" value="SQL=Trace" />
         </properties>

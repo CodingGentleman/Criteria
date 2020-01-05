@@ -1,11 +1,14 @@
 package at.fhj.criteria.persistence;
 
 import at.fhj.criteria.entities.Entity;
+
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 public enum Persistence {
     INST;
     private ViewEntityManager entityManager;
+    private EntityManager originalEntityManager;
     private EntityManagerFactory managerFactory;
     private DatabaseManagementSystem databaseManagementSystem;
     private PersistenceProvider persistenceProvider;
@@ -24,12 +27,17 @@ public enum Persistence {
         return entityManager;
     }
 
+    public EntityManager getOriginalEntityManager() {
+        return originalEntityManager;
+    }
+
     public void register(DatabaseManagementSystem databaseManagementSystem, PersistenceProvider persistenceProvider) {
         this.databaseManagementSystem = databaseManagementSystem;
         this.persistenceProvider = persistenceProvider;
         var persistenceName = databaseManagementSystem.name() + "_" + persistenceProvider.name();
         managerFactory = javax.persistence.Persistence.createEntityManagerFactory(persistenceName.toLowerCase());
-        entityManager = new EntityManagerProxy(managerFactory.createEntityManager());
+        originalEntityManager = managerFactory.createEntityManager();
+        entityManager = new EntityManagerAdapter(originalEntityManager);
     }
 
     public void persist(Entity entity) {
@@ -58,7 +66,7 @@ public enum Persistence {
     public void inTransaction(Runnable runnable) {
         var transaction = entityManager.getTransaction();
         if(!transaction.isActive()) {
-        transaction.begin();
+            transaction.begin();
         }
         runnable.run();
         transaction.commit();

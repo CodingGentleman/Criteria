@@ -93,7 +93,11 @@ public class Order implements Entity<OrderView>, OrderView {
     }
 
     public void setDeliveryAddress(AddressView deliveryAddress) {
-        this.deliveryAddress = deliveryAddress.getEntity();
+        if(deliveryAddress == null) {
+            this.deliveryAddress = null;
+        } else {
+            this.deliveryAddress = deliveryAddress.getEntity();
+        }
     }
 
     @Override

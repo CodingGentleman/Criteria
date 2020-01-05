@@ -1,159 +1,165 @@
 package at.fhj.criteria;
 
+import at.fhj.criteria.entities.*;
+import at.fhj.criteria.persistence.Criteria;
 import at.fhj.criteria.persistence.Persistence;
-import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
+import at.fhj.criteria.persistence.PersistenceReader;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import java.math.BigInteger;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class UseCases {
-    private Random random = new Random();
-    private static final int BATCH_SIZE = 99999;
-    private final int count;
-    public UseCases(int count){
-        this.count = count;
+    private EntityManager entityManager;
+    private String lastname;
+
+    public UseCases(int testDataQuantity) {
+        this.lastname = "L" + (new Random().nextInt(testDataQuantity)+1);
+        new TestDataInsert(testDataQuantity).batchInsert();
+        entityManager = Persistence.INST.getOriginalEntityManager();
     }
 
-    public void batchInsert() {
-        Persistence.INST.inTransaction(this::setSearchPath);
-        Persistence.INST.inTransaction(this::insertAddress);
-        Persistence.INST.inTransaction(this::insertOrder);
-        Persistence.INST.inTransaction(this::insertOrderLine);
-        Persistence.INST.inTransaction(this::insertVoucher);
+    public int selectCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createQuery(Address.class);
+        var root = query.from(Address.class);
+        query.select(root);
+        query.where(cb.equal(root.get(Address_.lastname), lastname));
+        return entityManager.createQuery(query).getSingleResult().getId();
     }
 
-    private void setSearchPath() {
-        try {
-            getConnection().createStatement().execute("set search_path = 'testdb';");
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public int selectHql() {
+        var query  = entityManager.createQuery("FROM "+Address.class.getSimpleName()+" a WHERE a.lastname = :lastname", Address.class);
+        query.setParameter("lastname", lastname);
+        return query.getSingleResult().getId();
     }
 
-    private void insertVoucher() {
-        try {
-            var psVoucher = getConnection().prepareStatement("INSERT INTO voucher (code, \"value\") VALUES (?, ?)");
-            var batchCounterVoucher = 0;
-            var psVoucherOrder = getConnection().prepareStatement("INSERT INTO voucher_order (order_id, voucher_code) VALUES (?, ?)");
-            var batchCounterVoucherOrder = 0;
-            var psVoucherOrderLine = getConnection().prepareStatement("INSERT INTO voucher_orderline (orderline_id, voucher_code) VALUES (?, ?)");
-            var batchCounterVoucherOrderLine = 0;
-            for (var i = 1; i < (count/4)+1; i++) {
-                psVoucher.setString(1, "V"+i);
-                psVoucher.setDouble(2, 5 + 15 * random.nextDouble());
-                psVoucher.addBatch();
-                if(++batchCounterVoucher > BATCH_SIZE) {
-                    psVoucher.executeBatch();
-                }
-
-                if(i%2==0) {
-                    psVoucherOrder.setInt(1, random.nextInt(count)+1);
-                    psVoucherOrder.setString(2, "V"+i);
-                    psVoucherOrder.addBatch();
-                    if(++batchCounterVoucherOrder > BATCH_SIZE) {
-                        psVoucherOrder.executeBatch();
-                    }
-                } else {
-                    psVoucherOrderLine.setInt(1, random.nextInt(count*5)+1);
-                    psVoucherOrderLine.setString(2, "V"+i);
-                    psVoucherOrderLine.addBatch();
-                    if(++batchCounterVoucherOrderLine > BATCH_SIZE) {
-                        psVoucherOrderLine.executeBatch();
-                    }
-                }
-            }
-            psVoucher.executeBatch();
-            psVoucherOrder.executeBatch();
-            psVoucherOrderLine.executeBatch();
-        } catch(SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public int selectSql() {
+        var query = entityManager.createNativeQuery("select id from "+Address.class.getSimpleName()+" where lastname = ?");
+        query.setParameter(1, lastname);
+        return (Integer) query.getSingleResult();
     }
 
-    private void insertOrderLine() {
-        try {
-            var psOrderLine = getConnection().prepareStatement("INSERT INTO orderline (order_id, \"name\", quantity) VALUES (?, ?, ?)");
-            var batchCounter = 0;
-            for (var i = 1; i < count + 1; i++) {
-                for (var j = 0; j < 5; j++) {
-                    psOrderLine.setInt(1, i);
-                    psOrderLine.setString(2, "N"+i+"_"+j);
-                    psOrderLine.setInt(3, random.nextInt(10)+1);
-                    psOrderLine.addBatch();
-                    if(++batchCounter > BATCH_SIZE) {
-                        psOrderLine.executeBatch();
-                    }
-                }
-            }
-            psOrderLine.executeBatch();
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public int updateCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createCriteriaUpdate(Address.class);
+        var root = query.from(Address.class);
+        query.where(cb.equal(root.get(Address_.lastname), lastname));
+        query.set(Address_.firstname, "updated");
+        return entityManager.createQuery(query).executeUpdate();
     }
 
-    private void insertOrder() {
-        try {
-            var psOrder = getConnection().prepareStatement("INSERT INTO orders (order_type, invoiceaddress_id, deliveryaddress_id) VALUES (?, ?, ?)");
-            var batchCounter = 0;
-            for (var i = 1; i < count + 1; i++) {
-                psOrder.setInt(1, i%2);
-                psOrder.setInt(2, i);
-                psOrder.setInt(3, random.nextInt(count)+1);
-                psOrder.addBatch();
-                if(++batchCounter > BATCH_SIZE) {
-                    psOrder.executeBatch();
-                }
-            }
-            psOrder.executeBatch();
-        } catch(SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public int updateHql() {
+        var query  = entityManager.createQuery("UPDATE "+Address.class.getSimpleName()+" a SET a.firstname = :newValue WHERE a.lastname = :lastname");
+        query.setParameter("newValue", "updated");
+        query.setParameter("lastname", lastname);
+        return query.executeUpdate();
     }
 
-    private void insertAddress() {
-        try {
-            var ps = getConnection().prepareStatement("INSERT INTO address (firstname, lastname) VALUES (?, ?)");
-            var batchCounter = 0;
-            for (var i = 1; i < count + 1; i++) {
-                ps.setString(1, "F" + i);
-                ps.setString(2, "L" + i);
-                ps.addBatch();
-                if(++batchCounter > BATCH_SIZE) {
-                    ps.executeBatch();
-                }
-            }
-            ps.executeBatch();
-        } catch(SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public int updateSql() {
+        var query = entityManager.createNativeQuery("UPDATE "+Address.class.getSimpleName()+" SET firstname = ? WHERE lastname = ?");
+        query.setParameter(1, "updated");
+        query.setParameter(2, lastname);
+        return query.executeUpdate();
     }
 
-    private Connection getConnection() {
-        switch (Persistence.INST.getPersistenceProvider()) {
-            case HIBERNATE:
-                final var session = Persistence.INST.getEntityManager().unwrap(Session.class);
-                var connectionRetriever = new HibernateConnectionRetriever();
-                session.doWork(connectionRetriever);
-                return connectionRetriever.getConnection();
-            case OPENJPA:
-            case ECLIPSELINK:
-                return Persistence.INST.getEntityManager().unwrap(java.sql.Connection.class);
-        }
-        throw new IllegalStateException("connection retrieval not implemented for persistence provider");
+    public int deleteCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createCriteriaDelete(Address.class);
+        var root = query.from(Address.class);
+        query.where(cb.equal(root.get(Address_.lastname), "detached1"));
+        return entityManager.createQuery(query).executeUpdate();
     }
 
-    private static class HibernateConnectionRetriever implements Work {
-        Connection conn;
+    public int deleteHql() {
+        var query  = entityManager.createQuery("DELETE FROM "+ Address.class.getSimpleName()+" a WHERE a.lastname = :lastname");
+        query.setParameter("lastname", "detached2");
+        return query.executeUpdate();
+    }
 
-        @Override
-        public void execute(Connection arg0) throws SQLException {
-            this.conn = arg0;
-        }
+    public int deleteSql() {
+        var query = entityManager.createNativeQuery("DELETE FROM "+Address.class.getSimpleName()+" WHERE lastname = ?");
+        query.setParameter(1, "detached3");
+        return query.executeUpdate();
+    }
 
-        Connection getConnection() {
-            return conn;
-        }
+    public int queryCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createQuery(Long.class);
+        var root = query.from(Order.class);
+        var vouchers = root.join(Order_.vouchers);
+        var invoiceAddress = root.join(Order_.invoiceAddress);
+        query.where(cb.greaterThan(vouchers.get(Voucher_.value), 10.0));
+        query.select(cb.count(invoiceAddress));
+        return entityManager.createQuery(query).getSingleResult().intValue();
+    }
+
+    public int queryHql() {
+        var query  = entityManager.createQuery("select count(a) from Order o join o.vouchers v join o.invoiceAddress a where v.value > :minValue", Long.class);
+        query.setParameter("minValue", 10d);
+        return query.getSingleResult().intValue();
+    }
+
+    public int querySql() {
+        var query  = entityManager.createNativeQuery(
+                "select count(a.id) " +
+                "from orders o " +
+                "join voucher_order vo on o.id = vo.order_id " +
+                "join voucher v on v.code = vo.voucher_code " +
+                "join address a on o.invoiceaddress_id = a.id " +
+                "where v.value > ?");
+        query.setParameter(1, 10d);
+        return ((BigInteger)query.getSingleResult()).intValue();
+    }
+
+    public int subQueryCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createQuery(Long.class);
+        var root = query.from(Voucher.class);
+
+        var subQuery = query.subquery(Double.class);
+        var subRoot = subQuery.from(Voucher.class);
+        subQuery.select(cb.avg(subRoot.get(Voucher_.value)));
+
+        query.where(cb.greaterThan(root.get(Voucher_.value), subQuery));
+        query.select(cb.count(root.get(Voucher_.value)));
+        return entityManager.createQuery(query).getSingleResult().intValue();
+    }
+
+    public int subQueryHql() {
+        var query = entityManager.createQuery(
+                "select count(aboveAvgVoucher) from Voucher aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from Voucher v )",
+                Long.class);
+        return query.getSingleResult().intValue();
+    }
+
+    public int subQuerySql() {
+        var query = entityManager.createNativeQuery(
+                "select count(aboveAvgVoucher) from Voucher aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from Voucher v )");
+        return ((BigInteger)query.getSingleResult()).intValue();
+    }
+
+    public int castCriteria() {
+        var cb = entityManager.getCriteriaBuilder();
+        var query = cb.createQuery(Long.class);
+        var root = query.from(Voucher.class);
+        query.where(cb.equal(root.get(Voucher_.value).as(Integer.class), 5));
+        query.select(cb.count(root.get(Voucher_.code)));
+        return entityManager.createQuery(query).getSingleResult().intValue();
+    }
+
+    public int castHql() {
+        var query = entityManager.createQuery(
+                "select count(code) from Voucher where cast(value as integer) = 5",
+                Long.class);
+        return query.getSingleResult().intValue();
+    }
+
+    public int castSql() {
+        var query = entityManager.createNativeQuery(
+                "select count(code) from Voucher where cast(value as int) = 5");
+        return ((BigInteger)query.getSingleResult()).intValue();
     }
 }

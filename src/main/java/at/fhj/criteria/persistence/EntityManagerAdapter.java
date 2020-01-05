@@ -12,9 +12,9 @@ import javax.persistence.metamodel.Metamodel;
 import java.util.List;
 import java.util.Map;
 
-public class EntityManagerProxy implements ViewEntityManager {
+public class EntityManagerAdapter implements ViewEntityManager {
     private EntityManager delegate;
-    EntityManagerProxy(EntityManager delegate) {
+    EntityManagerAdapter(EntityManager delegate) {
         this.delegate = delegate;
     }
 
