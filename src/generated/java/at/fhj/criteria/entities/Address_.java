@@ -9,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Address_ {
 
 	public static volatile SingularAttribute<Address, String> firstname;
-	public static volatile SingularAttribute<Address, Integer> id;
+	public static volatile SingularAttribute<Address, Long> id;
 	public static volatile SingularAttribute<Address, String> lastname;
 
 	public static final String FIRSTNAME = "firstname";

@@ -30,32 +30,53 @@
             <property name="openjpa.ConnectionPassword" value="student"/>
         </properties>
     </persistence-unit> -->
-    <persistence-unit name="maria_hibernate" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="mariadb_hibernate" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <class>at.fhj.criteria.entities.Order</class>
+        <class>at.fhj.criteria.entities.OrderLine</class>
+        <class>at.fhj.criteria.entities.Address</class>
+        <class>at.fhj.criteria.entities.Voucher</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/testdb"/>
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
-            <property name="hibernate.default_schema" value="testdb"/>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+            <property name="hibernate.show_sql" value="true" />
         </properties>
     </persistence-unit>
-    <persistence-unit name="maria_eclipselink" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="mariadb_eclipselink" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <class>at.fhj.criteria.entities.Order</class>
+        <class>at.fhj.criteria.entities.OrderLine</class>
+        <class>at.fhj.criteria.entities.Address</class>
+        <class>at.fhj.criteria.entities.Voucher</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/testdb"/>
             <property name="javax.persistence.jdbc.user" value="student"/>
             <property name="javax.persistence.jdbc.password" value="student"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
     </persistence-unit>
-    <persistence-unit name="maria_openjpa" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="mariadb_openjpa" transaction-type="RESOURCE_LOCAL">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <class>at.fhj.criteria.entities.Order</class>
+        <class>at.fhj.criteria.entities.OrderLine</class>
+        <class>at.fhj.criteria.entities.Address</class>
+        <class>at.fhj.criteria.entities.Voucher</class>
         <properties>
             <property name="openjpa.ConnectionDriverName" value="org.mariadb.jdbc.Driver"/>
             <property name="openjpa.ConnectionURL" value="jdbc:mariadb://localhost:3306/testdb"/>
             <property name="openjpa.ConnectionUserName" value="student"/>
             <property name="openjpa.ConnectionPassword" value="student"/>
+            <property name="openjpa.jdbc.Schema" value="testdb" />
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
             <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
@@ -111,8 +132,7 @@
             <property name="openjpa.ConnectionURL" value="jdbc:postgresql://localhost:5432/testdb"/>
             <property name="openjpa.ConnectionUserName" value="student"/>
             <property name="openjpa.ConnectionPassword" value="student"/>
-            <!-- <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/> -->
-            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
+            <property name="javax.persistence.schema-generation.database.action" value="create"/>
             <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
             <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
             <property name="openjpa.Log" value="SQL=Trace" />

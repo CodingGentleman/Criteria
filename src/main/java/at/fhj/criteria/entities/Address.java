@@ -10,12 +10,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @javax.persistence.Entity
-@Table(name = "address")
+@Table(name = Address.TABLE_NAME)
 public class Address implements Entity<AddressView>, AddressView {
+    public final static String TABLE_NAME = "address";
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private String firstname;
     private String lastname;
@@ -37,7 +39,7 @@ public class Address implements Entity<AddressView>, AddressView {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 

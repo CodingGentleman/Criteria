@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UseCasesValidationTest {
-    static UseCases useCases;
+class UseCasesValidationPostgresEclipseLinkTest {
+    private static UseCases useCases;
 
     static {
-        Persistence.INST.register(DatabaseManagementSystem.POSTGRESQL, PersistenceProvider.HIBERNATE);
+        Persistence.INST.register(DatabaseManagementSystem.POSTGRESQL, PersistenceProvider.ECLIPSELINK);
     }
 
     @BeforeAll
@@ -69,11 +69,4 @@ public class UseCasesValidationTest {
         Assertions.assertTrue(c == s && s == h);
     }
 
-    @Test
-    void testCast() {
-        var c = useCases.castCriteria();
-        var h = useCases.castHql();
-        var s = useCases.castSql();
-        Assertions.assertTrue(c == s && s == h, "Criteria: "+c+", HQL: "+h+", SQL: "+s);
-    }
 }

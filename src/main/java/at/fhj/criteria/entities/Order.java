@@ -12,27 +12,29 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @javax.persistence.Entity
-@Table(name = "orders")
+@Table(name = Order.TABLE_NAME)
 public class Order implements Entity<OrderView>, OrderView {
+    public final static String TABLE_NAME = "orders";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Enumerated
     @Column(name = "order_type")
     private OrderType type;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval=true)
     private final List<OrderLine> lines = new ArrayList<>();
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.REMOVE)
     private Address invoiceAddress;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Address deliveryAddress;
 
-    @ManyToMany(mappedBy = "orders")
+    @ManyToMany(mappedBy = "orders", cascade = CascadeType.REMOVE)
     private List<Voucher> vouchers = new ArrayList<>();
 
     protected Order(){}
@@ -52,7 +54,7 @@ public class Order implements Entity<OrderView>, OrderView {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 

@@ -3,6 +3,7 @@ package at.fhj.criteria;
 import at.fhj.criteria.entities.*;
 import at.fhj.criteria.persistence.Criteria;
 import at.fhj.criteria.persistence.Persistence;
+import at.fhj.criteria.persistence.PersistenceProvider;
 import at.fhj.criteria.persistence.PersistenceReader;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public class UseCases {
     private EntityManager entityManager;
     private String lastname;
+    private static int deleteIndex = 1;
 
     public UseCases(int testDataQuantity) {
         this.lastname = "L" + (new Random().nextInt(testDataQuantity)+1);
@@ -21,7 +23,7 @@ public class UseCases {
         entityManager = Persistence.INST.getOriginalEntityManager();
     }
 
-    public int selectCriteria() {
+    public long selectCriteria() {
         var cb = entityManager.getCriteriaBuilder();
         var query = cb.createQuery(Address.class);
         var root = query.from(Address.class);
@@ -30,16 +32,23 @@ public class UseCases {
         return entityManager.createQuery(query).getSingleResult().getId();
     }
 
-    public int selectHql() {
+    public long selectHql() {
         var query  = entityManager.createQuery("FROM "+Address.class.getSimpleName()+" a WHERE a.lastname = :lastname", Address.class);
         query.setParameter("lastname", lastname);
         return query.getSingleResult().getId();
     }
 
-    public int selectSql() {
-        var query = entityManager.createNativeQuery("select id from "+Address.class.getSimpleName()+" where lastname = ?");
+    public long selectSql() {
+        var query = entityManager.createNativeQuery("select id from "+Address.TABLE_NAME+" where lastname = ?");
         query.setParameter(1, lastname);
-        return (Integer) query.getSingleResult();
+        var result = query.getSingleResult();
+        if(result instanceof Long) {
+            return (Long) result;
+        }
+        if(result instanceof Integer) {
+            return (Integer) result;
+        }
+        return ((BigInteger)result).intValue();
     }
 
     public int updateCriteria() {
@@ -59,7 +68,7 @@ public class UseCases {
     }
 
     public int updateSql() {
-        var query = entityManager.createNativeQuery("UPDATE "+Address.class.getSimpleName()+" SET firstname = ? WHERE lastname = ?");
+        var query = entityManager.createNativeQuery("UPDATE "+Address.TABLE_NAME+" SET firstname = ? WHERE lastname = ?");
         query.setParameter(1, "updated");
         query.setParameter(2, lastname);
         return query.executeUpdate();
@@ -69,19 +78,19 @@ public class UseCases {
         var cb = entityManager.getCriteriaBuilder();
         var query = cb.createCriteriaDelete(Address.class);
         var root = query.from(Address.class);
-        query.where(cb.equal(root.get(Address_.lastname), "detached1"));
+        query.where(cb.equal(root.get(Address_.lastname), "detached"+(deleteIndex++)));
         return entityManager.createQuery(query).executeUpdate();
     }
 
     public int deleteHql() {
         var query  = entityManager.createQuery("DELETE FROM "+ Address.class.getSimpleName()+" a WHERE a.lastname = :lastname");
-        query.setParameter("lastname", "detached2");
+        query.setParameter("lastname", "detached"+(deleteIndex++));
         return query.executeUpdate();
     }
 
     public int deleteSql() {
-        var query = entityManager.createNativeQuery("DELETE FROM "+Address.class.getSimpleName()+" WHERE lastname = ?");
-        query.setParameter(1, "detached3");
+        var query = entityManager.createNativeQuery("DELETE FROM "+Address.TABLE_NAME+" WHERE lastname = ?");
+        query.setParameter(1, "detached"+(deleteIndex++));
         return query.executeUpdate();
     }
 
@@ -97,7 +106,7 @@ public class UseCases {
     }
 
     public int queryHql() {
-        var query  = entityManager.createQuery("select count(a) from Order o join o.vouchers v join o.invoiceAddress a where v.value > :minValue", Long.class);
+        var query  = entityManager.createQuery("select count(a) from "+Order.class.getSimpleName()+" o join o.vouchers v join o.invoiceAddress a where v.value > :minValue", Long.class);
         query.setParameter("minValue", 10d);
         return query.getSingleResult().intValue();
     }
@@ -111,7 +120,11 @@ public class UseCases {
                 "join address a on o.invoiceaddress_id = a.id " +
                 "where v.value > ?");
         query.setParameter(1, 10d);
-        return ((BigInteger)query.getSingleResult()).intValue();
+        var result = query.getSingleResult();
+        if(result instanceof Long) {
+            return ((Long)result).intValue();
+        }
+        return ((BigInteger)result).intValue();
     }
 
     public int subQueryCriteria() {
@@ -130,36 +143,51 @@ public class UseCases {
 
     public int subQueryHql() {
         var query = entityManager.createQuery(
-                "select count(aboveAvgVoucher) from Voucher aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from Voucher v )",
+                "select count(aboveAvgVoucher) from "+Voucher.class.getSimpleName()+" aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from Voucher v )",
                 Long.class);
         return query.getSingleResult().intValue();
     }
 
     public int subQuerySql() {
         var query = entityManager.createNativeQuery(
-                "select count(aboveAvgVoucher) from Voucher aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from Voucher v )");
-        return ((BigInteger)query.getSingleResult()).intValue();
+                "select count(aboveAvgVoucher.code) from "+Voucher.TABLE_NAME+" aboveAvgVoucher where aboveAvgVoucher.value > ( select avg(v.value) from "+Voucher.TABLE_NAME+" v )");
+        var result = query.getSingleResult();
+        if(result instanceof Long) {
+            return ((Long)result).intValue();
+        }
+        return ((BigInteger)result).intValue();
     }
 
     public int castCriteria() {
         var cb = entityManager.getCriteriaBuilder();
         var query = cb.createQuery(Long.class);
         var root = query.from(Voucher.class);
-        query.where(cb.equal(root.get(Voucher_.value).as(Integer.class), 5));
+        query.where(cb.equal(root.get(Voucher_.value).as(Integer.TYPE), 5));
         query.select(cb.count(root.get(Voucher_.code)));
         return entityManager.createQuery(query).getSingleResult().intValue();
     }
 
     public int castHql() {
-        var query = entityManager.createQuery(
-                "select count(code) from Voucher where cast(value as integer) = 5",
-                Long.class);
-        return query.getSingleResult().intValue();
+        if(Persistence.INST.getPersistenceProvider().equals(PersistenceProvider.ECLIPSELINK)) {
+            var query = entityManager.createQuery(
+                    "select count(v.code) from "+Voucher.class.getSimpleName()+" v where cast(v.value integer) = 5",
+                    Long.class);
+            return query.getResultList().iterator().next().intValue();
+        } else {
+            var query = entityManager.createQuery(
+                    "select count(v.code) from "+Voucher.class.getSimpleName()+" v where cast(v.value as integer) = 5",
+                    Long.class);
+            return query.getSingleResult().intValue();
+        }
     }
 
     public int castSql() {
         var query = entityManager.createNativeQuery(
-                "select count(code) from Voucher where cast(value as int) = 5");
-        return ((BigInteger)query.getSingleResult()).intValue();
+                "select count(code) from "+Voucher.TABLE_NAME+" where cast(value as int) = 5");
+        var result = query.getSingleResult();
+        if(result instanceof Long) {
+            return ((Long)result).intValue();
+        }
+        return ((BigInteger)result).intValue();
     }
 }

@@ -27,17 +27,17 @@ public class OrderBuilder extends BaseBuilder<Order, OrderView> {
     }
 
     public OrderBuilder withLine(OrderLineView line) {
-        this.lines.add(line.getEntity());
+        this.lines.add(line);
         return this;
     }
 
     public OrderBuilder withInvoiceAddress(AddressView invoiceAddress) {
-        this.invoiceAddress = invoiceAddress.getEntity();
+        this.invoiceAddress = invoiceAddress;
         return this;
     }
 
     public OrderBuilder withDeliveryAddress(AddressView deliveryAddress) {
-        this.deliveryAddress = deliveryAddress.getEntity();
+        this.deliveryAddress = deliveryAddress;
         return this;
     }
 

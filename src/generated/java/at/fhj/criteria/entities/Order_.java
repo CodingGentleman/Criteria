@@ -11,7 +11,7 @@ public abstract class Order_ {
 
 	public static volatile SingularAttribute<Order, Address> deliveryAddress;
 	public static volatile SingularAttribute<Order, Address> invoiceAddress;
-	public static volatile SingularAttribute<Order, Integer> id;
+	public static volatile SingularAttribute<Order, Long> id;
 	public static volatile SingularAttribute<Order, OrderType> type;
 	public static volatile ListAttribute<Order, OrderLine> lines;
 	public static volatile ListAttribute<Order, Voucher> vouchers;

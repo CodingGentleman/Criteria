@@ -10,6 +10,15 @@ task criteriaWrapper(type: Wrapper){
     gradleVersion = '5.6'
 }
 
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'at.fhj.criteria.Main'
+    }
+    baseName = 'all-in-one-jar'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 repositories {
     mavenCentral()
 }
@@ -33,7 +42,7 @@ dependencies {
     annotationProcessor('org.hibernate:hibernate-jpamodelgen:5.4.9.Final')
 
     // EclipseLink
-    compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.4'
+    compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.5'
 
     // OpenJPA
     compile group: 'org.apache.openjpa', name: 'openjpa', version: '3.1.0'

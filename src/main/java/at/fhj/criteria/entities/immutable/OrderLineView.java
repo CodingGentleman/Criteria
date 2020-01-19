@@ -5,8 +5,8 @@ import at.fhj.criteria.entities.OrderLine;
 import java.util.List;
 
 public interface OrderLineView extends EntityView<OrderLine> {
-    int getId();
-    int getQuantity();
+    long getId();
+    long getQuantity();
     String getName();
     OrderView getOrder();
     List<VoucherView> getVouchers();

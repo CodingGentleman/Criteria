@@ -9,9 +9,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(OrderLine.class)
 public abstract class OrderLine_ {
 
-	public static volatile SingularAttribute<OrderLine, Integer> quantity;
+	public static volatile SingularAttribute<OrderLine, Long> quantity;
 	public static volatile SingularAttribute<OrderLine, String> name;
-	public static volatile SingularAttribute<OrderLine, Integer> id;
+	public static volatile SingularAttribute<OrderLine, Long> id;
 	public static volatile ListAttribute<OrderLine, Voucher> vouchers;
 	public static volatile SingularAttribute<OrderLine, Order> order;
 

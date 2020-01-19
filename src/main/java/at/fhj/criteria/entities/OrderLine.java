@@ -13,18 +13,20 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @javax.persistence.Entity
-@Table(name = "orderline")
+@Table(name = OrderLine.TABLE_NAME)
 public class OrderLine implements Entity<OrderLineView>, OrderLineView {
+    public final static String TABLE_NAME = "orderline";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private int quantity;
+    private long quantity;
 
     private String name;
 
@@ -48,12 +50,12 @@ public class OrderLine implements Entity<OrderLineView>, OrderLineView {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 

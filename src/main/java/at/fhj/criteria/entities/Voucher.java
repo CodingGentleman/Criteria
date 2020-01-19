@@ -14,14 +14,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @javax.persistence.Entity
-@Table(name = "voucher")
+@Table(name = Voucher.TABLE_NAME)
 public class Voucher implements Entity<VoucherView>, VoucherView {
+    public final static String TABLE_NAME = "voucher";
+
     @Id
     @Column(name = "code")
     private String code;
 
     @Column(name = "value")
-    private double value;
+    private Double value;
 
     @ManyToMany
     @JoinTable(
