@@ -1,4 +1,4 @@
-# WIP: Applied use of the Criteria API
+# Applied use of the Criteria API
 
 Student: **Kevin Schmid**  
 Supervisor: **FH-Prof. Dipl.-Ing. Dr. Egon Teiniker**
@@ -15,12 +15,10 @@ The goal of this project work is to answer the question, if the Criteria API can
 To get meaningful comparable values, different JPA provider and database management systems in their latest versions will be used.
 
 ## JPA providers
-- OpenJPA
 - Hibernate
 - EclipseLink
 
 ## Database Management Systems
-- Oracle Database
 - Postgres
 - MariaDB
 
@@ -32,50 +30,4 @@ Keith, Mike, Merrick Schincariol, Massimo Nardone (2018). Pro JPA 2 in Java EE 8
 
 ## Setup
 
-> TODO: Docker Container
-
-User credentials for all databases:
-
-User: **student**  
-Password: **student**    
-Schema: **testdb**
-
-### DB scripts
-
-> TODO: Will be automated
-
-#### MariaDB
-```shell
-mysql -u root -p <rootPassword>
-```
-```sql
-create user 'student'@'localhost' identified by 'student';
-create database testdb;
-grant all privileges on testdb.* to 'student'@'localhost' identified by 'student';
-```
-#### Postgres
-```shell
-sudo -u postgres psql
-```
-```sql
-create database testdb;
-create user student with encrypted password 'student';
-grant all privileges on database testdb to student;
-```
-
-#### Oracle
-
-Connect to your running container (check the name of ```docker ps```)
-
-```shell
-docker exec -it criteria_oracle_1 /bin/bash
-sqlplus "SYS/ as SYSDBA"
-```
-
-execute the statements in oracle/init.sql
-
-## Versions used
-- Java 11
-- MariaDB 10.4
-- Postgres 11.5
-- Oracle Database Enterprise Edition 12.2.0.1
+Setup is managed via Docker Container
